@@ -125,6 +125,7 @@ th, td {
     padding: 0.75rem;
     border: 1px solid var(--border-color);
     text-align: left;
+    vertical-align: top;
 }
 
 th {
@@ -148,6 +149,7 @@ tr:nth-child(even) {
 .action-btns {
     display: flex;
     gap: 0.5rem;
+    justify-content: center;
 }
 
 .edit-btn, .delete-btn {
@@ -170,6 +172,38 @@ tr:nth-child(even) {
     flex-wrap: wrap;
 }
 
+.exercise-cell, .volume-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.muscle-group {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.exercise-name {
+    font-size: 0.95rem;
+}
+
+.volume-cell div {
+    font-size: 0.9rem;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: transform 0.2s;
+}
+
+.icon-btn:hover {
+    transform: scale(1.2);
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
     .table-controls {
@@ -183,8 +217,19 @@ tr:nth-child(even) {
         font-size: 0.9rem;
     }
     
-    .action-btns {
-        flex-direction: column;
+    table {
+        font-size: 0.9rem;
+    }
+    
+    #workout-table th:nth-child(1), /* Date column */
+    #workout-table td:nth-child(1) {
+        width: 80px;
+        white-space: nowrap;
+    }
+    
+    #workout-table th:nth-child(4), /* Actions column */
+    #workout-table td:nth-child(4) {
+        width: 60px;
     }
 }
 

@@ -125,6 +125,28 @@ function deleteWorkout(id) {
     });
 }
 
+// Add function to get a single workout by ID
+function getWorkoutById(id) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.get(id);
+        
+        request.onsuccess = () => {
+            if (request.result) {
+                resolve(request.result);
+            } else {
+                reject('Workout not found');
+            }
+        };
+        
+        request.onerror = (event) => {
+            console.error('Error fetching workout:', event.target.error);
+            reject('Failed to fetch workout');
+        };
+    });
+}
+
 // UI Functions
 function showToast(message, isError = false) {
     const toast = document.createElement('div');
@@ -166,17 +188,30 @@ function renderWorkoutTable(workouts) {
             const row = document.createElement('tr');
             row.setAttribute('data-id', workout.id);
             
+            // Format the exercise display with muscle group and exercise name
+            const exerciseDisplay = `<div class="exercise-cell">
+                <div class="muscle-group">${workout.muscleGroup}</div>
+                <div class="exercise-name">${workout.exercise}</div>
+            </div>`;
+            
+            // Format the volume display with sets, reps, and weight
+            const volumeDisplay = `<div class="volume-cell">
+                <div>${workout.sets} sets</div>
+                <div>${workout.reps} reps</div>
+                <div>${workout.weight}</div>
+            </div>`;
+            
+            // Create action buttons with icons
+            const actionsDisplay = `<div class="action-btns">
+                <button class="icon-btn edit-btn" title="Edit">✏️</button>
+                <button class="icon-btn delete-btn" title="Delete">🗑️</button>
+            </div>`;
+            
             row.innerHTML = `
                 <td>${workout.date}</td>
-                <td>${workout.muscleGroup}</td>
-                <td>${workout.exercise}</td>
-                <td>${workout.sets}</td>
-                <td>${workout.reps}</td>
-                <td>${workout.weight}</td>
-                <td class="action-btns">
-                    <button class="btn-secondary edit-btn">Edit</button>
-                    <button class="btn-danger delete-btn">Delete</button>
-                </td>
+                <td>${exerciseDisplay}</td>
+                <td>${volumeDisplay}</td>
+                <td>${actionsDisplay}</td>
             `;
             
             tableBody.appendChild(row);
@@ -261,35 +296,34 @@ async function handleDeleteWorkout(event) {
 
 let currentEditId = null;
 
-function handleEditWorkout(event) {
+async function handleEditWorkout(event) {
     const row = event.target.closest('tr');
     const id = parseInt(row.getAttribute('data-id'), 10);
     currentEditId = id;
     
-    // Get data from the row
-    const cells = row.querySelectorAll('td');
-    const date = cells[0].textContent;
-    const muscleGroup = cells[1].textContent;
-    const exercise = cells[2].textContent;
-    const sets = cells[3].textContent;
-    const reps = cells[4].textContent;
-    const weight = cells[5].textContent;
-    
-    // Fill the form
-    document.getElementById('workout-date').value = date;
-    document.getElementById('muscle-group').value = muscleGroup;
-    document.getElementById('exercise').value = exercise;
-    document.getElementById('sets').value = sets;
-    document.getElementById('reps').value = reps;
-    document.getElementById('weight').value = weight;
-    
-    // Change button text
-    const submitBtn = document.querySelector('#add-workout-form button[type="submit"]');
-    submitBtn.textContent = 'Update Exercise';
-    submitBtn.classList.add('editing');
-    
-    // Scroll to form
-    document.getElementById('workout-form').scrollIntoView({ behavior: 'smooth' });
+    try {
+        // Get the workout directly from the database
+        const workout = await getWorkoutById(id);
+        
+        // Fill the form with the workout data
+        document.getElementById('workout-date').value = workout.date;
+        document.getElementById('muscle-group').value = workout.muscleGroup;
+        document.getElementById('exercise').value = workout.exercise;
+        document.getElementById('sets').value = workout.sets;
+        document.getElementById('reps').value = workout.reps;
+        document.getElementById('weight').value = workout.weight;
+        
+        // Change button text
+        const submitBtn = document.querySelector('#add-workout-form button[type="submit"]');
+        submitBtn.textContent = 'Update Exercise';
+        submitBtn.classList.add('editing');
+        
+        // Scroll to form
+        document.getElementById('workout-form').scrollIntoView({ behavior: 'smooth' });
+    } catch (error) {
+        showToast('Failed to load workout data for editing', true);
+        console.error('Error loading workout data:', error);
+    }
 }
 
 async function handleUpdateWorkout(event) {
