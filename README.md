@@ -12,7 +12,6 @@ You can also test locally by running a local web server as described below.
 
 - Progressive Web App (PWA) - can be installed on your iPhone home screen
 - Works offline - all data stored locally on your device
-- No Apple developer fees required
 - Simple and intuitive interface
 - Add, edit, and delete workout entries
 - Filter workouts by date
