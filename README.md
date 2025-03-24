@@ -26,6 +26,20 @@ You can also test locally by running a local web server as described below.
 4. Give the app a name (or keep the default) and tap "Add"
 5. The app icon will appear on your home screen
 
+## Updating the App
+
+When the app is updated, you will see an "Update Available" notification at the bottom of the screen when you open the app. You have two options:
+
+1. **Update Now**: Click this button to immediately reload the app with the latest version
+2. **Later**: Dismiss the notification and continue using the current version
+
+If you don't see the notification or need to force an update:
+
+1. Close the app by swiping it up from the app switcher
+2. On iOS, go to Settings → Safari → Advanced → Website Data
+3. Find and remove the data for the app's domain (jon32446.github.io)
+4. Reopen the app from your home screen
+
 ## Local Development
 
 To run this app locally for development:

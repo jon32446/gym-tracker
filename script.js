@@ -601,6 +601,29 @@ async function exportWorkoutsToCSV() {
     }
 }
 
+// Show update notification
+function showUpdateNotification() {
+    const notification = document.createElement('div');
+    notification.className = 'update-notification';
+    notification.innerHTML = `
+        <div class="update-message">
+            <span>A new version is available!</span>
+            <button id="update-btn">Update Now</button>
+            <button id="dismiss-btn">Later</button>
+        </div>
+    `;
+    document.body.appendChild(notification);
+    
+    // Add event listeners
+    document.getElementById('update-btn').addEventListener('click', () => {
+        window.location.reload();
+    });
+    
+    document.getElementById('dismiss-btn').addEventListener('click', () => {
+        notification.remove();
+    });
+}
+
 // Entry point - Initialize app
 document.addEventListener('DOMContentLoaded', async () => {
     try {
@@ -608,6 +631,32 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Set today's date as default
         document.getElementById('workout-date').value = formatDate(new Date());
+        
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js')
+                .then(registration => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                    
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                showUpdateNotification();
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Service Worker registration failed:', error);
+                });
+                
+            // Listen for controller change (indicates an update)
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                console.log('New service worker activated');
+            });
+        }
         
         // Add event listeners
         const form = document.getElementById('add-workout-form');
