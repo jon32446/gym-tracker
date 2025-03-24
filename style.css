@@ -334,6 +334,115 @@ tr:nth-child(even) {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
+/* Danger Zone */
+.danger-zone {
+    margin-top: 3rem;
+    padding: 1.5rem;
+    border: 1px solid #ff3b30;
+    border-radius: 8px;
+    background-color: rgba(255, 59, 48, 0.05);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.danger-zone h3 {
+    color: #ff3b30;
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+}
+
+.warning-text {
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.btn-danger {
+    background-color: #ff3b30;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.btn-danger:hover {
+    background-color: #e0352b;
+}
+
+.btn-danger:disabled {
+    background-color: #ffb1ad;
+    cursor: not-allowed;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #ff3b30;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.modal-body {
+    padding: 1rem;
+}
+
+.modal-footer {
+    padding: 1rem;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.no-data {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
     .table-controls {

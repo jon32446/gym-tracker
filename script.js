@@ -728,6 +728,66 @@ async function importWorkouts(workouts) {
     }
 }
 
+// Show the clear database confirmation modal
+function showClearDBModal() {
+    const modal = document.getElementById('clear-db-modal');
+    const confirmTextInput = document.getElementById('confirm-text');
+    const confirmBtn = document.getElementById('confirm-clear');
+    
+    // Reset the input field
+    confirmTextInput.value = '';
+    confirmBtn.disabled = true;
+    
+    // Show the modal
+    modal.classList.remove('hidden');
+    
+    // Focus on the input field
+    setTimeout(() => confirmTextInput.focus(), 100);
+}
+
+// Hide the clear database confirmation modal
+function hideClearDBModal() {
+    const modal = document.getElementById('clear-db-modal');
+    modal.classList.add('hidden');
+}
+
+// Validate the confirmation text input
+function validateConfirmText() {
+    const confirmTextInput = document.getElementById('confirm-text');
+    const confirmBtn = document.getElementById('confirm-clear');
+    
+    // Enable the confirm button only if the text is "DELETE"
+    confirmBtn.disabled = confirmTextInput.value !== 'DELETE';
+}
+
+// Clear all workout data from IndexedDB
+async function clearAllData() {
+    try {
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        
+        // Clear all data
+        const request = store.clear();
+        
+        // Wait for the request to complete
+        await new Promise((resolve, reject) => {
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error);
+        });
+        
+        // Hide the modal
+        hideClearDBModal();
+        
+        // Refresh the workout list
+        await loadWorkouts();
+        
+        showToast('All workout data has been cleared');
+    } catch (error) {
+        console.error('Failed to clear database:', error);
+        showToast('Failed to clear database', true);
+    }
+}
+
 // Show update notification
 function showUpdateNotification() {
     const notification = document.createElement('div');
@@ -818,6 +878,46 @@ document.addEventListener('DOMContentLoaded', async () => {
                     processCSVFile(event.target.files[0]);
                     // Reset the input so the same file can be selected again
                     event.target.value = '';
+                }
+            });
+        }
+        
+        // Clear DB button
+        const clearDbBtn = document.getElementById('clear-db-btn');
+        if (clearDbBtn) {
+            clearDbBtn.addEventListener('click', showClearDBModal);
+        }
+        
+        // Close modal button
+        const closeModalBtn = document.querySelector('.close-modal');
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', hideClearDBModal);
+        }
+        
+        // Cancel clear button
+        const cancelClearBtn = document.getElementById('cancel-clear');
+        if (cancelClearBtn) {
+            cancelClearBtn.addEventListener('click', hideClearDBModal);
+        }
+        
+        // Confirm text input
+        const confirmTextInput = document.getElementById('confirm-text');
+        if (confirmTextInput) {
+            confirmTextInput.addEventListener('input', validateConfirmText);
+        }
+        
+        // Confirm clear button
+        const confirmClearBtn = document.getElementById('confirm-clear');
+        if (confirmClearBtn) {
+            confirmClearBtn.addEventListener('click', clearAllData);
+        }
+        
+        // Close modal if user clicks outside of it
+        const modal = document.getElementById('clear-db-modal');
+        if (modal) {
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    hideClearDBModal();
                 }
             });
         }

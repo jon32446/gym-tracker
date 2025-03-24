@@ -100,14 +100,39 @@
                     </tbody>
                 </table>
             </div>
+            <div id="no-data" class="no-data hidden">
+                <p>No workout data to display. Add your first workout above!</p>
+            </div>
             
-            <div id="no-data" class="hidden">
-                <p>No workouts found. Add your first workout above!</p>
+            <div class="danger-zone">
+                <h3>Danger Zone</h3>
+                <p class="warning-text">The following actions are destructive and cannot be undone.</p>
+                <button id="clear-db-btn" class="btn-danger">Clear All Data</button>
             </div>
         </section>
-    </main>
-    
-    <footer>
+        
+        <!-- Modal for DB Clear Confirmation -->
+        <div id="clear-db-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>⚠️ Confirm Database Clear</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>This action will permanently delete ALL your workout data and cannot be undone.</p>
+                    <p>To proceed, type <strong>"DELETE"</strong> in the field below:</p>
+                    <div class="form-group">
+                        <input type="text" id="confirm-text" placeholder="Type DELETE here">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="cancel-clear" class="btn-secondary">Cancel</button>
+                    <button id="confirm-clear" class="btn-danger" disabled>Clear Database</button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
         <p>Gym Tracker PWA - Works Offline</p>
     </footer>
 
