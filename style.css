@@ -6,6 +6,7 @@
     --dark-color: #343A40;
     --border-color: #DEE2E6;
     --success-color: #42B883;
+    --accent-color: #3A7BC8;
 }
 
 * {
@@ -170,6 +171,20 @@ tr:nth-child(even) {
     align-items: center;
     gap: 0.5rem;
     flex-wrap: wrap;
+}
+
+.export-control {
+    margin-right: 1rem;
+}
+
+#export-csv-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+}
+
+#export-csv-btn:hover {
+    background-color: #3a7bd5;
 }
 
 .exercise-cell, .volume-cell {

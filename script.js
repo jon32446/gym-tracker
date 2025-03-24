@@ -547,6 +547,60 @@ async function populatePreviousWorkoutData() {
     }
 }
 
+// Export workouts to CSV
+async function exportWorkoutsToCSV() {
+    try {
+        const workouts = await getAllWorkouts();
+        
+        if (workouts.length === 0) {
+            showToast('No workout data to export', true);
+            return;
+        }
+        
+        // CSV header
+        let csvContent = 'Date,Muscle Group,Exercise,Sets,Reps,Weight\n';
+        
+        // Add workout data rows
+        workouts.forEach(workout => {
+            // Format the data and handle any commas by enclosing in quotes
+            const date = workout.date;
+            const muscleGroup = `"${workout.muscleGroup.replace(/"/g, '""')}"`;
+            const exercise = `"${workout.exercise.replace(/"/g, '""')}"`;
+            const sets = workout.sets;
+            const reps = `"${workout.reps.replace(/"/g, '""')}"`;
+            const weight = `"${workout.weight.replace(/"/g, '""')}"`;
+            
+            // Add row to CSV
+            csvContent += `${date},${muscleGroup},${exercise},${sets},${reps},${weight}\n`;
+        });
+        
+        // Create blob and download link
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        
+        // Create temporary link element
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `gym-tracker-export-${new Date().toISOString().slice(0, 10)}.csv`);
+        link.style.display = 'none';
+        
+        // Add link to document, trigger click, and remove
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Release the URL object
+        setTimeout(() => {
+            URL.revokeObjectURL(url);
+        }, 100);
+        
+        showToast('Workout data exported successfully');
+    } catch (error) {
+        console.error('Error exporting workouts:', error);
+        showToast('Failed to export workout data', true);
+    }
+}
+
 // Entry point - Initialize app
 document.addEventListener('DOMContentLoaded', async () => {
     try {
@@ -567,6 +621,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         document.getElementById('date-filter').addEventListener('change', handleFilterByDate);
         document.getElementById('clear-filter').addEventListener('click', handleClearFilter);
+        
+        // Export CSV button
+        const exportCsvBtn = document.getElementById('export-csv-btn');
+        if (exportCsvBtn) {
+            exportCsvBtn.addEventListener('click', exportWorkoutsToCSV);
+        }
         
         // Add event listener for exercise field
         document.getElementById('exercise').addEventListener('change', populatePreviousWorkoutData);
