@@ -138,11 +138,6 @@ tr:nth-child(even) {
     background-color: rgba(0, 0, 0, 0.02);
 }
 
-.table-container {
-    overflow-x: auto;
-    max-width: 100%;
-}
-
 .hidden {
     display: none;
 }
@@ -219,12 +214,111 @@ tr:nth-child(even) {
     transform: scale(1.2);
 }
 
+/* Table controls and filtering */
+.table-header {
+    margin-bottom: 1rem;
+}
+
+.table-header h2 {
+    margin-bottom: 1rem;
+    color: var(--dark-color);
+    font-size: 1.5rem;
+}
+
+.table-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.filter-input-group {
+    display: flex;
+    align-items: center;
+}
+
+.divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 1rem 0;
+    width: 100%;
+}
+
+/* Button styles */
+.btn-icon {
+    background: none;
+    border: none;
+    color: #777;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.btn-icon:hover {
+    color: var(--primary-color);
+}
+
+#export-csv-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+}
+
+#export-csv-btn:hover {
+    background-color: #3a7bd5;
+}
+
+#export-csv-btn .icon {
+    font-size: 1.1rem;
+}
+
+.exercise-cell, .volume-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
     .table-controls {
         flex-direction: column;
         align-items: flex-start;
         gap: 1rem;
+    }
+    
+    .filter-group {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .filter-input-group {
+        flex: 1;
+    }
+    
+    .filter-input-group input[type="date"] {
+        width: 100%;
     }
     
     th, td {

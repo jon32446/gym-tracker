@@ -63,18 +63,24 @@
         </section>
         
         <section id="workout-display">
-            <div class="table-controls">
+            <div class="table-header">
                 <h2>Workout History</h2>
-                <div class="filter-controls">
-                    <div class="export-control">
-                        <button id="export-csv-btn" class="btn-secondary">Export CSV</button>
+                <div class="table-controls">
+                    <div class="control-group">
+                        <button id="export-csv-btn" class="btn-secondary">
+                            <span class="icon">📊</span> Export CSV
+                        </button>
                     </div>
-                    <label for="date-filter">Filter by date:</label>
-                    <input type="date" id="date-filter">
-                    <button id="clear-filter" class="btn-secondary">Clear Filter</button>
+                    <div class="control-group filter-group">
+                        <label for="date-filter">Filter by date:</label>
+                        <div class="filter-input-group">
+                            <input type="date" id="date-filter">
+                            <button id="clear-filter" class="btn-icon" title="Clear filter">✖</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
+            <div class="divider"></div>
             <div class="table-container">
                 <table id="workout-table">
                     <thead>
