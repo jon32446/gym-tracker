@@ -2,6 +2,12 @@
 
 A simple, offline-capable Progressive Web App (PWA) for tracking your gym workouts. This application allows you to plan and record your gym sessions with details like date, muscle group, exercise, sets, reps, and weights.
 
+## Deployment
+
+The app is available at https://jon32446.github.io/gym-tracker/
+
+You can also test locally by running a local web server as described below.
+
 ## Features
 
 - Progressive Web App (PWA) - can be installed on your iPhone home screen
@@ -38,7 +44,7 @@ To run this app locally for development:
    python -m SimpleHTTPServer
    ```
 
-3. Access the app at `http://localhost:8000` (or whichever port your server uses)
+3. Access the app at `http://localhost:8080` (or whichever port your server uses)
 
 ## Data Storage
 
@@ -46,11 +52,3 @@ This app uses IndexedDB for local storage:
 - All your workout data is stored locally on your device
 - No data is sent to any server
 - Clearing your browser data will also clear your workout data
-
-## Deployment
-
-To deploy this app for use on your iPhone:
-
-1. Host the files on any web server or hosting service (GitHub Pages, Netlify, Vercel, etc.)
-2. Access the URL on your iPhone using Safari
-3. Follow the "Installation on iPhone" instructions above

@@ -2,7 +2,7 @@
   "name": "Gym Tracker",
   "short_name": "Gym Tracker",
   "description": "Track your gym workouts with this offline-capable app",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4A90E2",
