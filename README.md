@@ -132,7 +132,3 @@ To run this app locally for development:
 - No information is sent to any external servers
 - Your workout data never leaves your device unless you export it
 - Clearing your browser data will also delete your workout history
-
-## Support and Feedback
-
-For issues or feature requests, please open an issue on the GitHub repository.
