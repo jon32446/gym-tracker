@@ -229,7 +229,14 @@ tr:nth-child(even) {
     
     #workout-table th:nth-child(4), /* Actions column */
     #workout-table td:nth-child(4) {
-        width: 60px;
+        width: 40px;
+    }
+    
+    /* Stack action buttons vertically on mobile */
+    .action-btns {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
     }
 }
 
