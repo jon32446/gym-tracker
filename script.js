@@ -460,6 +460,57 @@ function updateExerciseOptions() {
         option.value = exercise;
         exerciseList.appendChild(option);
     });
+    
+    // Reset exercise field value when muscle group changes
+    document.getElementById('exercise').value = '';
+    
+    // Also reset sets, reps and weight fields
+    document.getElementById('sets').value = '';
+    document.getElementById('reps').value = '';
+    document.getElementById('weight').value = '';
+}
+
+// Function to populate previous workout data when an exercise is selected
+async function populatePreviousWorkoutData() {
+    const muscleGroup = document.getElementById('muscle-group').value.trim();
+    const exercise = document.getElementById('exercise').value.trim();
+    
+    if (!muscleGroup || !exercise) {
+        return; // Need both muscle group and exercise
+    }
+    
+    try {
+        // Get all workouts
+        const workouts = await getAllWorkouts();
+        
+        // Filter workouts for this specific muscle group and exercise
+        const matchingWorkouts = workouts.filter(workout => 
+            workout.muscleGroup === muscleGroup && 
+            workout.exercise === exercise
+        );
+        
+        if (matchingWorkouts.length === 0) {
+            return; // No matching workouts found
+        }
+        
+        // Sort by date descending to get the most recent workout
+        matchingWorkouts.sort((a, b) => {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            return dateB - dateA;
+        });
+        
+        // Get the most recent workout for this exercise
+        const mostRecent = matchingWorkouts[0];
+        
+        // Auto-populate the form fields
+        document.getElementById('sets').value = mostRecent.sets;
+        document.getElementById('reps').value = mostRecent.reps;
+        document.getElementById('weight').value = mostRecent.weight;
+        
+    } catch (error) {
+        console.error('Error fetching previous workout data:', error);
+    }
 }
 
 // Entry point - Initialize app
@@ -482,6 +533,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         document.getElementById('date-filter').addEventListener('change', handleFilterByDate);
         document.getElementById('clear-filter').addEventListener('click', handleClearFilter);
+        
+        // Add event listener for exercise field
+        document.getElementById('exercise').addEventListener('change', populatePreviousWorkoutData);
         
         // Load initial data
         loadWorkouts();
