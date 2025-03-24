@@ -172,14 +172,22 @@ tr:nth-child(even) {
     margin-right: 1rem;
 }
 
-#export-csv-btn {
+#export-csv-btn, #import-csv-btn {
     background-color: var(--accent-color);
     color: white;
     border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
 }
 
-#export-csv-btn:hover {
+#export-csv-btn:hover, #import-csv-btn:hover {
     background-color: #3a7bd5;
+}
+
+#export-csv-btn .icon, #import-csv-btn .icon {
+    font-size: 1.1rem;
 }
 
 .exercise-cell, .volume-cell {
@@ -274,30 +282,6 @@ tr:nth-child(even) {
 
 .btn-icon:hover {
     color: var(--primary-color);
-}
-
-#export-csv-btn {
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-}
-
-#export-csv-btn:hover {
-    background-color: #3a7bd5;
-}
-
-#export-csv-btn .icon {
-    font-size: 1.1rem;
-}
-
-.exercise-cell, .volume-cell {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
 }
 
 /* Update notification */

@@ -601,6 +601,133 @@ async function exportWorkoutsToCSV() {
     }
 }
 
+// Import workouts from CSV
+function importCSVFile() {
+    // Trigger the hidden file input
+    document.getElementById('csv-file-input').click();
+}
+
+// Process the CSV file
+async function processCSVFile(file) {
+    try {
+        const contents = await readFile(file);
+        const workouts = parseCSV(contents);
+        
+        if (workouts.length === 0) {
+            showToast('No valid workout data found in the CSV file', true);
+            return;
+        }
+        
+        // Confirm import
+        if (confirm(`Are you sure you want to import ${workouts.length} workout(s)? This won't overwrite existing workouts.`)) {
+            await importWorkouts(workouts);
+            showToast(`Successfully imported ${workouts.length} workout(s)`);
+            await loadWorkouts(); // Refresh the table
+        }
+    } catch (error) {
+        console.error('Error importing CSV:', error);
+        showToast('Failed to import CSV file: ' + error.message, true);
+    }
+}
+
+// Read file contents as text
+function readFile(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+            resolve(e.target.result);
+        };
+        
+        reader.onerror = (e) => {
+            reject(new Error('Error reading file'));
+        };
+        
+        reader.readAsText(file);
+    });
+}
+
+// Parse CSV content into workout objects
+function parseCSV(csvContent) {
+    const lines = csvContent.split('\n');
+    const workouts = [];
+    
+    // Skip header row
+    for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        
+        try {
+            // Parse the CSV line, handling quoted fields
+            const values = parseCSVLine(line);
+            
+            if (values.length !== 6) {
+                console.warn(`Skipping invalid line: ${line}`);
+                continue;
+            }
+            
+            const [date, muscleGroup, exercise, sets, reps, weight] = values;
+            
+            // Validate required fields
+            if (!date || !muscleGroup || !exercise || !sets || !reps || !weight) {
+                console.warn(`Skipping line with missing data: ${line}`);
+                continue;
+            }
+            
+            workouts.push({
+                date,
+                muscleGroup,
+                exercise,
+                sets: parseInt(sets, 10) || 0,
+                reps,
+                weight
+            });
+        } catch (error) {
+            console.warn(`Error parsing line: ${line}`, error);
+        }
+    }
+    
+    return workouts;
+}
+
+// Parse a CSV line, handling quoted fields
+function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+    
+    for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        
+        if (char === '"') {
+            // Handle escaped quotes (two double quotes in a row)
+            if (i + 1 < line.length && line[i + 1] === '"') {
+                current += '"';
+                i++; // Skip the next quote
+            } else {
+                inQuotes = !inQuotes;
+            }
+        } else if (char === ',' && !inQuotes) {
+            // End of field
+            result.push(current);
+            current = '';
+        } else {
+            current += char;
+        }
+    }
+    
+    // Add the last field
+    result.push(current);
+    return result;
+}
+
+// Import workout data into IndexedDB
+async function importWorkouts(workouts) {
+    for (const workout of workouts) {
+        await addWorkout(workout);
+    }
+}
+
 // Show update notification
 function showUpdateNotification() {
     const notification = document.createElement('div');
@@ -675,6 +802,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         const exportCsvBtn = document.getElementById('export-csv-btn');
         if (exportCsvBtn) {
             exportCsvBtn.addEventListener('click', exportWorkoutsToCSV);
+        }
+        
+        // Import CSV button
+        const importCsvBtn = document.getElementById('import-csv-btn');
+        if (importCsvBtn) {
+            importCsvBtn.addEventListener('click', importCSVFile);
+        }
+        
+        // CSV file input change
+        const csvFileInput = document.getElementById('csv-file-input');
+        if (csvFileInput) {
+            csvFileInput.addEventListener('change', (event) => {
+                if (event.target.files.length > 0) {
+                    processCSVFile(event.target.files[0]);
+                    // Reset the input so the same file can be selected again
+                    event.target.value = '';
+                }
+            });
         }
         
         // Add event listener for exercise field

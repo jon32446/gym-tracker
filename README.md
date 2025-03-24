@@ -16,6 +16,7 @@ You can also test locally by running a local web server as described below.
 - Add, edit, and delete workout entries
 - Filter workouts by date
 - Export workout data as CSV for backup
+- Import workout data from CSV files
 - Responsive design - works on mobile and desktop
 
 ## Installation on iPhone
