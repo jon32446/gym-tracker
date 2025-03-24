@@ -224,6 +224,11 @@ async function handleAddWorkout(event) {
         showToast('Workout added successfully');
         document.getElementById('add-workout-form').reset();
         
+        // Reset form state
+        const submitBtn = document.querySelector('#add-workout-form button[type="submit"]');
+        submitBtn.textContent = 'Add Exercise';
+        submitBtn.classList.remove('editing');
+        
         // Set today's date as default
         document.getElementById('workout-date').value = formatDate(new Date());
         
@@ -374,30 +379,82 @@ async function loadWorkouts() {
 
 // Function to update autocomplete lists
 function updateAutocompleteLists(workouts) {
-    // Extract unique muscle groups and exercises
+    // Extract unique muscle groups
     const muscleGroups = new Set();
-    const exercises = new Set();
+    
+    // Create a map of muscle groups to their exercises
+    const exercisesByMuscleGroup = {};
     
     workouts.forEach(workout => {
-        muscleGroups.add(workout.muscleGroup);
-        exercises.add(workout.exercise);
+        const muscleGroup = workout.muscleGroup;
+        const exercise = workout.exercise;
+        
+        muscleGroups.add(muscleGroup);
+        
+        // Initialize array for this muscle group if it doesn't exist
+        if (!exercisesByMuscleGroup[muscleGroup]) {
+            exercisesByMuscleGroup[muscleGroup] = new Set();
+        }
+        
+        // Add this exercise to the set for this muscle group
+        exercisesByMuscleGroup[muscleGroup].add(exercise);
     });
     
-    // Update datalists
+    // Store the mapping in a data attribute on the form for later use
+    const form = document.getElementById('add-workout-form');
+    form.dataset.exercisesByMuscleGroup = JSON.stringify(
+        Object.fromEntries(
+            Object.entries(exercisesByMuscleGroup).map(
+                ([group, exercises]) => [group, [...exercises]]
+            )
+        )
+    );
+    
+    // Update muscle group datalist
     const muscleGroupList = document.getElementById('muscle-group-list');
-    const exerciseList = document.getElementById('exercise-list');
-    
-    // Clear existing options
     muscleGroupList.innerHTML = '';
-    exerciseList.innerHTML = '';
     
-    // Add new options
     muscleGroups.forEach(group => {
         const option = document.createElement('option');
         option.value = group;
         muscleGroupList.appendChild(option);
     });
     
+    // Set up event listener for muscle group changes
+    const muscleGroupInput = document.getElementById('muscle-group');
+    
+    // Remove existing listener if it exists
+    const newMuscleGroupInput = muscleGroupInput.cloneNode(true);
+    muscleGroupInput.parentNode.replaceChild(newMuscleGroupInput, muscleGroupInput);
+    
+    // Add new listener
+    newMuscleGroupInput.addEventListener('input', updateExerciseOptions);
+    
+    // Initial update of exercise options
+    updateExerciseOptions();
+}
+
+// Function to update exercise options based on selected muscle group
+function updateExerciseOptions() {
+    const muscleGroupInput = document.getElementById('muscle-group');
+    const exerciseList = document.getElementById('exercise-list');
+    const selectedMuscleGroup = muscleGroupInput.value.trim();
+    
+    // Clear the current options
+    exerciseList.innerHTML = '';
+    
+    if (!selectedMuscleGroup) {
+        return; // No muscle group selected
+    }
+    
+    // Get the stored exercise mapping
+    const form = document.getElementById('add-workout-form');
+    const exercisesByMuscleGroup = JSON.parse(form.dataset.exercisesByMuscleGroup || '{}');
+    
+    // Get exercises for this muscle group
+    const exercises = exercisesByMuscleGroup[selectedMuscleGroup] || [];
+    
+    // Add options to the datalist
     exercises.forEach(exercise => {
         const option = document.createElement('option');
         option.value = exercise;
