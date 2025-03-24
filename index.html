@@ -29,12 +29,18 @@
                 
                 <div class="form-group">
                     <label for="muscle-group">Muscle Group</label>
-                    <input type="text" id="muscle-group" placeholder="e.g., Chest, Back, Legs" required>
+                    <input type="text" id="muscle-group" placeholder="e.g., Chest, Back, Legs" list="muscle-group-list" required>
+                    <datalist id="muscle-group-list">
+                        <!-- Muscle groups will be dynamically added here -->
+                    </datalist>
                 </div>
                 
                 <div class="form-group">
                     <label for="exercise">Exercise</label>
-                    <input type="text" id="exercise" placeholder="e.g., Barbell bench press" required>
+                    <input type="text" id="exercise" placeholder="e.g., Barbell bench press" list="exercise-list" required>
+                    <datalist id="exercise-list">
+                        <!-- Exercises will be dynamically added here -->
+                    </datalist>
                 </div>
                 
                 <div class="form-group">

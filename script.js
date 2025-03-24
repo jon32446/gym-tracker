@@ -357,10 +357,52 @@ function handleClearFilter() {
 async function loadWorkouts() {
     try {
         const workouts = await getAllWorkouts();
+        
+        // Sort workouts by date (most recent first)
+        workouts.sort((a, b) => {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            return dateB - dateA;  // Descending order (most recent first)
+        });
+        
         renderWorkoutTable(workouts);
+        updateAutocompleteLists(workouts);
     } catch (error) {
         showToast('Failed to load workouts', true);
     }
+}
+
+// Function to update autocomplete lists
+function updateAutocompleteLists(workouts) {
+    // Extract unique muscle groups and exercises
+    const muscleGroups = new Set();
+    const exercises = new Set();
+    
+    workouts.forEach(workout => {
+        muscleGroups.add(workout.muscleGroup);
+        exercises.add(workout.exercise);
+    });
+    
+    // Update datalists
+    const muscleGroupList = document.getElementById('muscle-group-list');
+    const exerciseList = document.getElementById('exercise-list');
+    
+    // Clear existing options
+    muscleGroupList.innerHTML = '';
+    exerciseList.innerHTML = '';
+    
+    // Add new options
+    muscleGroups.forEach(group => {
+        const option = document.createElement('option');
+        option.value = group;
+        muscleGroupList.appendChild(option);
+    });
+    
+    exercises.forEach(exercise => {
+        const option = document.createElement('option');
+        option.value = exercise;
+        exerciseList.appendChild(option);
+    });
 }
 
 // Entry point - Initialize app
